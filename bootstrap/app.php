@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Middleware\CheckRoleMiddleware;
+use App\Http\Middleware\RedirectIfAuthenticated;
+use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -11,8 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
-    })
+        $middleware->alias([
+            'auth' => Authenticate::class,
+            'guest' => RedirectIfAuthenticated::class,
+            'check_role' => CheckRoleMiddleware::class,
+        ]);
+    }) 
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
